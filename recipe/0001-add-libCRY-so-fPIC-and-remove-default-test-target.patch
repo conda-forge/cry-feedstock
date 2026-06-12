@@ -17,7 +17,13 @@
  OBJ = $(SRC:%.cc=%.o)
  DEP = $(SRC:%.cc=.%.d)  
  LIB = ../lib/libCRY.a
-+SLIB = ../lib/libCRY.so
++ifeq ($(shell uname),Darwin)
++   SLIB = ../lib/libCRY.dylib
++   SHARED_FLAG = -dynamiclib -Wl,-install_name,@rpath/libCRY.dylib
++else
++   SLIB = ../lib/libCRY.so
++   SHARED_FLAG = -shared
++endif
  
 -CPPFLAGS += -Wall
 +CPPFLAGS += -Wall -fPIC
@@ -33,13 +39,13 @@
  
 +$(SLIB): $(OBJ)
 +	@if (test -f $(SLIB) ) then (rm $(SLIB)) fi
-+	$(CXX) -shared \
++	$(CXX) $(SHARED_FLAG) \
 +	-o $(SLIB) \
 +	$(OBJ)
 +	@echo "Done making $(SLIB)"
 +
  clean:
 -	rm -f *.o .*.d ../lib/libCRY.a 
-+	rm -f *.o .*.d ../lib/libCRY.a ../lib/libCRY.so
++	rm -f *.o .*.d ../lib/libCRY.a $(SLIB)
  
  .PHONY: depend clean
