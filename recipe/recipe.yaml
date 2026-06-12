@@ -18,10 +18,9 @@ build:
     - cp lib/libCRY.* ${PREFIX}/lib/
     - rm ${PREFIX}/lib/*.a
     - mkdir -p ${PREFIX}/include/cry && cp src/*.h ${PREFIX}/include/cry/
-  number: 0
+  number: 1
   skip:
     - win
-    - osx
 
 requirements:
   build:
@@ -54,7 +53,7 @@ tests:
         - etc/conda/test-files/cry/0/*
       strict: true
   - script:
-    - cd test && $CXX testMain.cc -o testMain -I${PREFIX}/include/cry -L${PREFIX}/lib -lCRY
+    - cd test && $CXX testMain.cc -o testMain -I${PREFIX}/include/cry -L${PREFIX}/lib -lCRY ${LDFLAGS}
     - ./testMain ./setup.file 100
     requirements:
       run:
